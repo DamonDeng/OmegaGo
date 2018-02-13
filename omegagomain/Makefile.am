@@ -5,4 +5,15 @@ omegago
 
 omegago_SOURCES = OmegaGoMain.cpp
 
+omegago_LDFLAGS = $(BOOST_LDFLAGS)
+
+omegago_LDADD = \
+$(BOOST_PROGRAM_OPTIONS_LIB) \
+$(BOOST_FILESYSTEM_LIB) \
+$(BOOST_SYSTEM_LIB) \
+$(BOOST_THREAD_LIB)
+
+omegago_CPPFLAGS = \
+$(BOOST_CPPFLAGS) 
+
 DISTCLEANFILES = *~

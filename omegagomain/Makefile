@@ -86,10 +86,19 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_triplet = x86_64-apple-darwin15.6.0
+host_triplet = x86_64-apple-darwin15.6.0
 bin_PROGRAMS = omegago$(EXEEXT)
 subdir = omegagomain
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_base.m4 \
+	$(top_srcdir)/m4/ax_boost_date_time.m4 \
+	$(top_srcdir)/m4/ax_boost_filesystem.m4 \
+	$(top_srcdir)/m4/ax_boost_program_options.m4 \
+	$(top_srcdir)/m4/ax_boost_system.m4 \
+	$(top_srcdir)/m4/ax_boost_thread.m4 \
+	$(top_srcdir)/m4/ax_boost_unit_test_framework.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
@@ -99,9 +108,13 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_omegago_OBJECTS = OmegaGoMain.$(OBJEXT)
+am_omegago_OBJECTS = omegago-OmegaGoMain.$(OBJEXT)
 omegago_OBJECTS = $(am_omegago_OBJECTS)
-omegago_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
+omegago_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+omegago_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(omegago_LDFLAGS) \
+	$(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -118,6 +131,10 @@ DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 AM_V_CXX = $(am__v_CXX_$(V))
@@ -166,6 +183,17 @@ AUTOCONF = ${SHELL} /Users/mingxuan/Desktop/workspace/go_game/OmegaGo/missing au
 AUTOHEADER = ${SHELL} /Users/mingxuan/Desktop/workspace/go_game/OmegaGo/missing autoheader
 AUTOMAKE = ${SHELL} /Users/mingxuan/Desktop/workspace/go_game/OmegaGo/missing automake-1.15
 AWK = awk
+BOOST_CPPFLAGS = -pthread -I/usr/local/include
+BOOST_DATE_TIME_LIB = -lboost_date_time-mt
+BOOST_FILESYSTEM_LIB = -lboost_filesystem
+BOOST_LDFLAGS = -L/usr/local/lib
+BOOST_PROGRAM_OPTIONS_LIB = -lboost_program_options-mt
+BOOST_SYSTEM_LIB = -lboost_system
+BOOST_THREAD_LIB = -lboost_thread-mt
+BOOST_UNIT_TEST_FRAMEWORK_LIB = -lboost_unit_test_framework-mt
+CC = gcc
+CCDEPMODE = depmode=gcc3
+CFLAGS = -g -O2
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
@@ -197,6 +225,7 @@ PACKAGE_TARNAME = omegago
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.1
 PATH_SEPARATOR = :
+RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = 
@@ -205,6 +234,7 @@ abs_builddir = /Users/mingxuan/Desktop/workspace/go_game/OmegaGo/omegagomain
 abs_srcdir = /Users/mingxuan/Desktop/workspace/go_game/OmegaGo/omegagomain
 abs_top_builddir = /Users/mingxuan/Desktop/workspace/go_game/OmegaGo
 abs_top_srcdir = /Users/mingxuan/Desktop/workspace/go_game/OmegaGo
+ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
 am__leading_dot = .
@@ -212,14 +242,22 @@ am__quote =
 am__tar = $${TAR-tar} chof - "$$tardir"
 am__untar = $${TAR-tar} xf -
 bindir = ${exec_prefix}/bin
+build = x86_64-apple-darwin15.6.0
 build_alias = 
+build_cpu = x86_64
+build_os = darwin15.6.0
+build_vendor = apple
 builddir = .
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
+host = x86_64-apple-darwin15.6.0
 host_alias = 
+host_cpu = x86_64
+host_os = darwin15.6.0
+host_vendor = apple
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
@@ -245,6 +283,16 @@ top_builddir = ..
 top_srcdir = ..
 AUTOMAKE_OPTIONS = foreign
 omegago_SOURCES = OmegaGoMain.cpp
+omegago_LDFLAGS = $(BOOST_LDFLAGS)
+omegago_LDADD = \
+$(BOOST_PROGRAM_OPTIONS_LIB) \
+$(BOOST_FILESYSTEM_LIB) \
+$(BOOST_SYSTEM_LIB) \
+$(BOOST_THREAD_LIB)
+
+omegago_CPPFLAGS = \
+$(BOOST_CPPFLAGS) 
+
 DISTCLEANFILES = *~
 all: all-am
 
@@ -324,7 +372,7 @@ clean-binPROGRAMS:
 
 omegago$(EXEEXT): $(omegago_OBJECTS) $(omegago_DEPENDENCIES) $(EXTRA_omegago_DEPENDENCIES) 
 	@rm -f omegago$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(omegago_OBJECTS) $(omegago_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(omegago_LINK) $(omegago_OBJECTS) $(omegago_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -332,7 +380,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/OmegaGoMain.Po
+include ./$(DEPDIR)/omegago-OmegaGoMain.Po
 
 .cpp.o:
 	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -347,6 +395,20 @@ include ./$(DEPDIR)/OmegaGoMain.Po
 #	$(AM_V_CXX)source='$<' object='$@' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+omegago-OmegaGoMain.o: OmegaGoMain.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(omegago_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT omegago-OmegaGoMain.o -MD -MP -MF $(DEPDIR)/omegago-OmegaGoMain.Tpo -c -o omegago-OmegaGoMain.o `test -f 'OmegaGoMain.cpp' || echo '$(srcdir)/'`OmegaGoMain.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/omegago-OmegaGoMain.Tpo $(DEPDIR)/omegago-OmegaGoMain.Po
+#	$(AM_V_CXX)source='OmegaGoMain.cpp' object='omegago-OmegaGoMain.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(omegago_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o omegago-OmegaGoMain.o `test -f 'OmegaGoMain.cpp' || echo '$(srcdir)/'`OmegaGoMain.cpp
+
+omegago-OmegaGoMain.obj: OmegaGoMain.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(omegago_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT omegago-OmegaGoMain.obj -MD -MP -MF $(DEPDIR)/omegago-OmegaGoMain.Tpo -c -o omegago-OmegaGoMain.obj `if test -f 'OmegaGoMain.cpp'; then $(CYGPATH_W) 'OmegaGoMain.cpp'; else $(CYGPATH_W) '$(srcdir)/OmegaGoMain.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/omegago-OmegaGoMain.Tpo $(DEPDIR)/omegago-OmegaGoMain.Po
+#	$(AM_V_CXX)source='OmegaGoMain.cpp' object='omegago-OmegaGoMain.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(omegago_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o omegago-OmegaGoMain.obj `if test -f 'OmegaGoMain.cpp'; then $(CYGPATH_W) 'OmegaGoMain.cpp'; else $(CYGPATH_W) '$(srcdir)/OmegaGoMain.cpp'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

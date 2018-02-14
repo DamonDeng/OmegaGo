@@ -29,5 +29,6 @@ AX_BOOST_UNIT_TEST_FRAMEWORK
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
-                 omegagomain/Makefile])
+                 omegagomain/Makefile
+                 smartgame/Makefile])
 AC_OUTPUT

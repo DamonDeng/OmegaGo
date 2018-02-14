@@ -111,8 +111,6 @@ PROGRAMS = $(bin_PROGRAMS)
 am_omegago_OBJECTS = omegago-OmegaGoMain.$(OBJEXT)
 omegago_OBJECTS = $(am_omegago_OBJECTS)
 am__DEPENDENCIES_1 =
-omegago_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 omegago_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(omegago_LDFLAGS) \
 	$(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_$(V))
@@ -285,13 +283,18 @@ AUTOMAKE_OPTIONS = foreign
 omegago_SOURCES = OmegaGoMain.cpp
 omegago_LDFLAGS = $(BOOST_LDFLAGS)
 omegago_LDADD = \
+../smartgame/libomegago_smartgame.a \
 $(BOOST_PROGRAM_OPTIONS_LIB) \
 $(BOOST_FILESYSTEM_LIB) \
 $(BOOST_SYSTEM_LIB) \
 $(BOOST_THREAD_LIB)
 
+omegago_DEPENDENCIES = \
+../smartgame/libomegago_smartgame.a
+
 omegago_CPPFLAGS = \
-$(BOOST_CPPFLAGS) 
+$(BOOST_CPPFLAGS) \
+-I../smartgame
 
 DISTCLEANFILES = *~
 all: all-am

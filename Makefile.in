@@ -346,6 +346,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = \
+smartgame \
 omegagomain
 
 dist_doc_DATA = README

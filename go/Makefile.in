@@ -15,6 +15,7 @@
 @SET_MAKE@
 
 
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -89,7 +90,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = smartgame
+bin_PROGRAMS = bitboard_test$(EXEEXT)
+subdir = go
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_base.m4 \
 	$(top_srcdir)/m4/ax_boost_date_time.m4 \
@@ -114,16 +116,21 @@ AM_V_AR = $(am__v_AR_@AM_V@)
 am__v_AR_ = $(am__v_AR_@AM_DEFAULT_V@)
 am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
-libomegago_smartgame_a_AR = $(AR) $(ARFLAGS)
-libomegago_smartgame_a_LIBADD =
-am_libomegago_smartgame_a_OBJECTS =  \
-	libomegago_smartgame_a-SgDebug.$(OBJEXT) \
-	libomegago_smartgame_a-SgSystem.$(OBJEXT) \
-	libomegago_smartgame_a-SgTime.$(OBJEXT) \
-	libomegago_smartgame_a-SgException.$(OBJEXT) \
-	libomegago_smartgame_a-SgGtpCommands.$(OBJEXT) \
-	libomegago_smartgame_a-SgRandom.$(OBJEXT)
-libomegago_smartgame_a_OBJECTS = $(am_libomegago_smartgame_a_OBJECTS)
+libomegago_go_a_AR = $(AR) $(ARFLAGS)
+libomegago_go_a_LIBADD =
+am_libomegago_go_a_OBJECTS = libomegago_go_a-GoBitBoard.$(OBJEXT) \
+	libomegago_go_a-GoGtpEngine.$(OBJEXT) \
+	libomegago_go_a-GoGtpCommandUtil.$(OBJEXT)
+libomegago_go_a_OBJECTS = $(am_libomegago_go_a_OBJECTS)
+am__installdirs = "$(DESTDIR)$(bindir)"
+PROGRAMS = $(bin_PROGRAMS)
+am_bitboard_test_OBJECTS = bitboard_test-GoBitBoardTest.$(OBJEXT) \
+	bitboard_test-GoBitBoard.$(OBJEXT) \
+	bitboard_test-GoGtpEngine.$(OBJEXT)
+bitboard_test_OBJECTS = $(am_bitboard_test_OBJECTS)
+am__DEPENDENCIES_1 =
+bitboard_test_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(bitboard_test_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -157,8 +164,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libomegago_smartgame_a_SOURCES)
-DIST_SOURCES = $(libomegago_smartgame_a_SOURCES)
+SOURCES = $(libomegago_go_a_SOURCES) $(bitboard_test_SOURCES)
+DIST_SOURCES = $(libomegago_go_a_SOURCES) $(bitboard_test_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -291,28 +298,48 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LIBRARIES = libomegago_smartgame.a
-libomegago_smartgame_a_SOURCES = \
-SgDebug.cpp \
-SgSystem.cpp \
-SgTime.cpp \
-SgException.cpp \
-SgGtpCommands.cpp \
-SgRandom.cpp
+noinst_LIBRARIES = libomegago_go.a
+libomegago_go_a_SOURCES = \
+GoBitBoard.cpp \
+GoGtpEngine.cpp \
+GoGtpCommandUtil.cpp
 
 noinst_HEADERS = \
-SgDebug.h \
-SgSystem.h \
-SgTime.h \
-SgTimer.h \
-SgException.h \
-SgGtpCommands.h \
-SgRandom.h
+GoBitBoard.h \
+GoGtpEngine.h \
+GoBitBoard.h \
+GoBoard.h \
+GoGlobal.h
 
-libomegago_smartgame_a_CPPFLAGS = \
+libomegago_go_a_CPPFLAGS = \
 $(BOOST_CPPFLAGS) \
--I@top_srcdir@/gtpengine \
--Itesting
+-I@top_srcdir@/smartgame \
+-I@top_srcdir@/gtpengine
+
+bitboard_test_SOURCES = \
+GoBitBoardTest.cpp \
+GoBitBoard.cpp \
+GoGtpEngine.cpp
+
+bitboard_test_LDFLAGS = $(BOOST_LDFLAGS)
+bitboard_test_LDADD = \
+../smartgame/libomegago_smartgame.a \
+../gtpengine/libomegago_gtpengine.a \
+../go/libomegago_go.a \
+$(BOOST_PROGRAM_OPTIONS_LIB) \
+$(BOOST_FILESYSTEM_LIB) \
+$(BOOST_SYSTEM_LIB) \
+$(BOOST_THREAD_LIB)
+
+bitboard_test_DEPENDENCIES = \
+../smartgame/libomegago_smartgame.a \
+../gtpengine/libomegago_gtpengine.a \
+../go/libomegago_go.a 
+
+bitboard_test_CPPFLAGS = \
+$(BOOST_CPPFLAGS) \
+-I@top_srcdir@/smartgame \
+-I@top_srcdir@/gtpengine
 
 DISTCLEANFILES = *~
 all: all-am
@@ -328,9 +355,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu smartgame/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu go/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu smartgame/Makefile
+	  $(AUTOMAKE) --gnu go/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -352,10 +379,56 @@ $(am__aclocal_m4_deps):
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
 
-libomegago_smartgame.a: $(libomegago_smartgame_a_OBJECTS) $(libomegago_smartgame_a_DEPENDENCIES) $(EXTRA_libomegago_smartgame_a_DEPENDENCIES) 
-	$(AM_V_at)-rm -f libomegago_smartgame.a
-	$(AM_V_AR)$(libomegago_smartgame_a_AR) libomegago_smartgame.a $(libomegago_smartgame_a_OBJECTS) $(libomegago_smartgame_a_LIBADD)
-	$(AM_V_at)$(RANLIB) libomegago_smartgame.a
+libomegago_go.a: $(libomegago_go_a_OBJECTS) $(libomegago_go_a_DEPENDENCIES) $(EXTRA_libomegago_go_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libomegago_go.a
+	$(AM_V_AR)$(libomegago_go_a_AR) libomegago_go.a $(libomegago_go_a_OBJECTS) $(libomegago_go_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libomegago_go.a
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
+	fi; \
+	for p in $$list; do echo "$$p $$p"; done | \
+	sed 's/$(EXEEXT)$$//' | \
+	while read p p1; do if test -f $$p \
+	  ; then echo "$$p"; echo "$$p"; else :; fi; \
+	done | \
+	sed -e 'p;s,.*/,,;n;h' \
+	    -e 's|.*|.|' \
+	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
+	sed 'N;N;N;s,\n, ,g' | \
+	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
+	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
+	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
+	    else { print "f", $$3 "/" $$4, $$1; } } \
+	  END { for (d in files) print "f", d, files[d] }' | \
+	while read type dir files; do \
+	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
+	    test -z "$$files" || { \
+	      echo " $(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
+	      $(INSTALL_PROGRAM_ENV) $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
+	    } \
+	; done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
+	files=`for p in $$list; do echo "$$p"; done | \
+	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
+	      -e 's/$$/$(EXEEXT)/' \
+	`; \
+	test -n "$$list" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(bindir)" && rm -f $$files
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+bitboard_test$(EXEEXT): $(bitboard_test_OBJECTS) $(bitboard_test_DEPENDENCIES) $(EXTRA_bitboard_test_DEPENDENCIES) 
+	@rm -f bitboard_test$(EXEEXT)
+	$(AM_V_CXXLD)$(bitboard_test_LINK) $(bitboard_test_OBJECTS) $(bitboard_test_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -363,12 +436,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libomegago_smartgame_a-SgDebug.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libomegago_smartgame_a-SgException.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libomegago_smartgame_a-SgRandom.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libomegago_smartgame_a-SgSystem.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libomegago_smartgame_a-SgTime.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitboard_test-GoBitBoard.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitboard_test-GoBitBoardTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitboard_test-GoGtpEngine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libomegago_go_a-GoBitBoard.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libomegago_go_a-GoGtpCommandUtil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libomegago_go_a-GoGtpEngine.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -384,89 +457,89 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-libomegago_smartgame_a-SgDebug.o: SgDebug.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgDebug.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgDebug.Tpo -c -o libomegago_smartgame_a-SgDebug.o `test -f 'SgDebug.cpp' || echo '$(srcdir)/'`SgDebug.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgDebug.Tpo $(DEPDIR)/libomegago_smartgame_a-SgDebug.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgDebug.cpp' object='libomegago_smartgame_a-SgDebug.o' libtool=no @AMDEPBACKSLASH@
+libomegago_go_a-GoBitBoard.o: GoBitBoard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_go_a-GoBitBoard.o -MD -MP -MF $(DEPDIR)/libomegago_go_a-GoBitBoard.Tpo -c -o libomegago_go_a-GoBitBoard.o `test -f 'GoBitBoard.cpp' || echo '$(srcdir)/'`GoBitBoard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_go_a-GoBitBoard.Tpo $(DEPDIR)/libomegago_go_a-GoBitBoard.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoBitBoard.cpp' object='libomegago_go_a-GoBitBoard.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgDebug.o `test -f 'SgDebug.cpp' || echo '$(srcdir)/'`SgDebug.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_go_a-GoBitBoard.o `test -f 'GoBitBoard.cpp' || echo '$(srcdir)/'`GoBitBoard.cpp
 
-libomegago_smartgame_a-SgDebug.obj: SgDebug.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgDebug.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgDebug.Tpo -c -o libomegago_smartgame_a-SgDebug.obj `if test -f 'SgDebug.cpp'; then $(CYGPATH_W) 'SgDebug.cpp'; else $(CYGPATH_W) '$(srcdir)/SgDebug.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgDebug.Tpo $(DEPDIR)/libomegago_smartgame_a-SgDebug.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgDebug.cpp' object='libomegago_smartgame_a-SgDebug.obj' libtool=no @AMDEPBACKSLASH@
+libomegago_go_a-GoBitBoard.obj: GoBitBoard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_go_a-GoBitBoard.obj -MD -MP -MF $(DEPDIR)/libomegago_go_a-GoBitBoard.Tpo -c -o libomegago_go_a-GoBitBoard.obj `if test -f 'GoBitBoard.cpp'; then $(CYGPATH_W) 'GoBitBoard.cpp'; else $(CYGPATH_W) '$(srcdir)/GoBitBoard.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_go_a-GoBitBoard.Tpo $(DEPDIR)/libomegago_go_a-GoBitBoard.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoBitBoard.cpp' object='libomegago_go_a-GoBitBoard.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgDebug.obj `if test -f 'SgDebug.cpp'; then $(CYGPATH_W) 'SgDebug.cpp'; else $(CYGPATH_W) '$(srcdir)/SgDebug.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_go_a-GoBitBoard.obj `if test -f 'GoBitBoard.cpp'; then $(CYGPATH_W) 'GoBitBoard.cpp'; else $(CYGPATH_W) '$(srcdir)/GoBitBoard.cpp'; fi`
 
-libomegago_smartgame_a-SgSystem.o: SgSystem.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgSystem.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgSystem.Tpo -c -o libomegago_smartgame_a-SgSystem.o `test -f 'SgSystem.cpp' || echo '$(srcdir)/'`SgSystem.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgSystem.Tpo $(DEPDIR)/libomegago_smartgame_a-SgSystem.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgSystem.cpp' object='libomegago_smartgame_a-SgSystem.o' libtool=no @AMDEPBACKSLASH@
+libomegago_go_a-GoGtpEngine.o: GoGtpEngine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_go_a-GoGtpEngine.o -MD -MP -MF $(DEPDIR)/libomegago_go_a-GoGtpEngine.Tpo -c -o libomegago_go_a-GoGtpEngine.o `test -f 'GoGtpEngine.cpp' || echo '$(srcdir)/'`GoGtpEngine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_go_a-GoGtpEngine.Tpo $(DEPDIR)/libomegago_go_a-GoGtpEngine.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoGtpEngine.cpp' object='libomegago_go_a-GoGtpEngine.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgSystem.o `test -f 'SgSystem.cpp' || echo '$(srcdir)/'`SgSystem.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_go_a-GoGtpEngine.o `test -f 'GoGtpEngine.cpp' || echo '$(srcdir)/'`GoGtpEngine.cpp
 
-libomegago_smartgame_a-SgSystem.obj: SgSystem.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgSystem.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgSystem.Tpo -c -o libomegago_smartgame_a-SgSystem.obj `if test -f 'SgSystem.cpp'; then $(CYGPATH_W) 'SgSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/SgSystem.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgSystem.Tpo $(DEPDIR)/libomegago_smartgame_a-SgSystem.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgSystem.cpp' object='libomegago_smartgame_a-SgSystem.obj' libtool=no @AMDEPBACKSLASH@
+libomegago_go_a-GoGtpEngine.obj: GoGtpEngine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_go_a-GoGtpEngine.obj -MD -MP -MF $(DEPDIR)/libomegago_go_a-GoGtpEngine.Tpo -c -o libomegago_go_a-GoGtpEngine.obj `if test -f 'GoGtpEngine.cpp'; then $(CYGPATH_W) 'GoGtpEngine.cpp'; else $(CYGPATH_W) '$(srcdir)/GoGtpEngine.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_go_a-GoGtpEngine.Tpo $(DEPDIR)/libomegago_go_a-GoGtpEngine.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoGtpEngine.cpp' object='libomegago_go_a-GoGtpEngine.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgSystem.obj `if test -f 'SgSystem.cpp'; then $(CYGPATH_W) 'SgSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/SgSystem.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_go_a-GoGtpEngine.obj `if test -f 'GoGtpEngine.cpp'; then $(CYGPATH_W) 'GoGtpEngine.cpp'; else $(CYGPATH_W) '$(srcdir)/GoGtpEngine.cpp'; fi`
 
-libomegago_smartgame_a-SgTime.o: SgTime.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgTime.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgTime.Tpo -c -o libomegago_smartgame_a-SgTime.o `test -f 'SgTime.cpp' || echo '$(srcdir)/'`SgTime.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgTime.Tpo $(DEPDIR)/libomegago_smartgame_a-SgTime.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgTime.cpp' object='libomegago_smartgame_a-SgTime.o' libtool=no @AMDEPBACKSLASH@
+libomegago_go_a-GoGtpCommandUtil.o: GoGtpCommandUtil.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_go_a-GoGtpCommandUtil.o -MD -MP -MF $(DEPDIR)/libomegago_go_a-GoGtpCommandUtil.Tpo -c -o libomegago_go_a-GoGtpCommandUtil.o `test -f 'GoGtpCommandUtil.cpp' || echo '$(srcdir)/'`GoGtpCommandUtil.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_go_a-GoGtpCommandUtil.Tpo $(DEPDIR)/libomegago_go_a-GoGtpCommandUtil.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoGtpCommandUtil.cpp' object='libomegago_go_a-GoGtpCommandUtil.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgTime.o `test -f 'SgTime.cpp' || echo '$(srcdir)/'`SgTime.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_go_a-GoGtpCommandUtil.o `test -f 'GoGtpCommandUtil.cpp' || echo '$(srcdir)/'`GoGtpCommandUtil.cpp
 
-libomegago_smartgame_a-SgTime.obj: SgTime.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgTime.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgTime.Tpo -c -o libomegago_smartgame_a-SgTime.obj `if test -f 'SgTime.cpp'; then $(CYGPATH_W) 'SgTime.cpp'; else $(CYGPATH_W) '$(srcdir)/SgTime.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgTime.Tpo $(DEPDIR)/libomegago_smartgame_a-SgTime.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgTime.cpp' object='libomegago_smartgame_a-SgTime.obj' libtool=no @AMDEPBACKSLASH@
+libomegago_go_a-GoGtpCommandUtil.obj: GoGtpCommandUtil.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_go_a-GoGtpCommandUtil.obj -MD -MP -MF $(DEPDIR)/libomegago_go_a-GoGtpCommandUtil.Tpo -c -o libomegago_go_a-GoGtpCommandUtil.obj `if test -f 'GoGtpCommandUtil.cpp'; then $(CYGPATH_W) 'GoGtpCommandUtil.cpp'; else $(CYGPATH_W) '$(srcdir)/GoGtpCommandUtil.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_go_a-GoGtpCommandUtil.Tpo $(DEPDIR)/libomegago_go_a-GoGtpCommandUtil.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoGtpCommandUtil.cpp' object='libomegago_go_a-GoGtpCommandUtil.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgTime.obj `if test -f 'SgTime.cpp'; then $(CYGPATH_W) 'SgTime.cpp'; else $(CYGPATH_W) '$(srcdir)/SgTime.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_go_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_go_a-GoGtpCommandUtil.obj `if test -f 'GoGtpCommandUtil.cpp'; then $(CYGPATH_W) 'GoGtpCommandUtil.cpp'; else $(CYGPATH_W) '$(srcdir)/GoGtpCommandUtil.cpp'; fi`
 
-libomegago_smartgame_a-SgException.o: SgException.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgException.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgException.Tpo -c -o libomegago_smartgame_a-SgException.o `test -f 'SgException.cpp' || echo '$(srcdir)/'`SgException.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgException.Tpo $(DEPDIR)/libomegago_smartgame_a-SgException.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgException.cpp' object='libomegago_smartgame_a-SgException.o' libtool=no @AMDEPBACKSLASH@
+bitboard_test-GoBitBoardTest.o: GoBitBoardTest.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bitboard_test-GoBitBoardTest.o -MD -MP -MF $(DEPDIR)/bitboard_test-GoBitBoardTest.Tpo -c -o bitboard_test-GoBitBoardTest.o `test -f 'GoBitBoardTest.cpp' || echo '$(srcdir)/'`GoBitBoardTest.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/bitboard_test-GoBitBoardTest.Tpo $(DEPDIR)/bitboard_test-GoBitBoardTest.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoBitBoardTest.cpp' object='bitboard_test-GoBitBoardTest.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgException.o `test -f 'SgException.cpp' || echo '$(srcdir)/'`SgException.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bitboard_test-GoBitBoardTest.o `test -f 'GoBitBoardTest.cpp' || echo '$(srcdir)/'`GoBitBoardTest.cpp
 
-libomegago_smartgame_a-SgException.obj: SgException.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgException.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgException.Tpo -c -o libomegago_smartgame_a-SgException.obj `if test -f 'SgException.cpp'; then $(CYGPATH_W) 'SgException.cpp'; else $(CYGPATH_W) '$(srcdir)/SgException.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgException.Tpo $(DEPDIR)/libomegago_smartgame_a-SgException.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgException.cpp' object='libomegago_smartgame_a-SgException.obj' libtool=no @AMDEPBACKSLASH@
+bitboard_test-GoBitBoardTest.obj: GoBitBoardTest.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bitboard_test-GoBitBoardTest.obj -MD -MP -MF $(DEPDIR)/bitboard_test-GoBitBoardTest.Tpo -c -o bitboard_test-GoBitBoardTest.obj `if test -f 'GoBitBoardTest.cpp'; then $(CYGPATH_W) 'GoBitBoardTest.cpp'; else $(CYGPATH_W) '$(srcdir)/GoBitBoardTest.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/bitboard_test-GoBitBoardTest.Tpo $(DEPDIR)/bitboard_test-GoBitBoardTest.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoBitBoardTest.cpp' object='bitboard_test-GoBitBoardTest.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgException.obj `if test -f 'SgException.cpp'; then $(CYGPATH_W) 'SgException.cpp'; else $(CYGPATH_W) '$(srcdir)/SgException.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bitboard_test-GoBitBoardTest.obj `if test -f 'GoBitBoardTest.cpp'; then $(CYGPATH_W) 'GoBitBoardTest.cpp'; else $(CYGPATH_W) '$(srcdir)/GoBitBoardTest.cpp'; fi`
 
-libomegago_smartgame_a-SgGtpCommands.o: SgGtpCommands.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgGtpCommands.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Tpo -c -o libomegago_smartgame_a-SgGtpCommands.o `test -f 'SgGtpCommands.cpp' || echo '$(srcdir)/'`SgGtpCommands.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Tpo $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgGtpCommands.cpp' object='libomegago_smartgame_a-SgGtpCommands.o' libtool=no @AMDEPBACKSLASH@
+bitboard_test-GoBitBoard.o: GoBitBoard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bitboard_test-GoBitBoard.o -MD -MP -MF $(DEPDIR)/bitboard_test-GoBitBoard.Tpo -c -o bitboard_test-GoBitBoard.o `test -f 'GoBitBoard.cpp' || echo '$(srcdir)/'`GoBitBoard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/bitboard_test-GoBitBoard.Tpo $(DEPDIR)/bitboard_test-GoBitBoard.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoBitBoard.cpp' object='bitboard_test-GoBitBoard.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgGtpCommands.o `test -f 'SgGtpCommands.cpp' || echo '$(srcdir)/'`SgGtpCommands.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bitboard_test-GoBitBoard.o `test -f 'GoBitBoard.cpp' || echo '$(srcdir)/'`GoBitBoard.cpp
 
-libomegago_smartgame_a-SgGtpCommands.obj: SgGtpCommands.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgGtpCommands.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Tpo -c -o libomegago_smartgame_a-SgGtpCommands.obj `if test -f 'SgGtpCommands.cpp'; then $(CYGPATH_W) 'SgGtpCommands.cpp'; else $(CYGPATH_W) '$(srcdir)/SgGtpCommands.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Tpo $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgGtpCommands.cpp' object='libomegago_smartgame_a-SgGtpCommands.obj' libtool=no @AMDEPBACKSLASH@
+bitboard_test-GoBitBoard.obj: GoBitBoard.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bitboard_test-GoBitBoard.obj -MD -MP -MF $(DEPDIR)/bitboard_test-GoBitBoard.Tpo -c -o bitboard_test-GoBitBoard.obj `if test -f 'GoBitBoard.cpp'; then $(CYGPATH_W) 'GoBitBoard.cpp'; else $(CYGPATH_W) '$(srcdir)/GoBitBoard.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/bitboard_test-GoBitBoard.Tpo $(DEPDIR)/bitboard_test-GoBitBoard.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoBitBoard.cpp' object='bitboard_test-GoBitBoard.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgGtpCommands.obj `if test -f 'SgGtpCommands.cpp'; then $(CYGPATH_W) 'SgGtpCommands.cpp'; else $(CYGPATH_W) '$(srcdir)/SgGtpCommands.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bitboard_test-GoBitBoard.obj `if test -f 'GoBitBoard.cpp'; then $(CYGPATH_W) 'GoBitBoard.cpp'; else $(CYGPATH_W) '$(srcdir)/GoBitBoard.cpp'; fi`
 
-libomegago_smartgame_a-SgRandom.o: SgRandom.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgRandom.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgRandom.Tpo -c -o libomegago_smartgame_a-SgRandom.o `test -f 'SgRandom.cpp' || echo '$(srcdir)/'`SgRandom.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgRandom.Tpo $(DEPDIR)/libomegago_smartgame_a-SgRandom.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgRandom.cpp' object='libomegago_smartgame_a-SgRandom.o' libtool=no @AMDEPBACKSLASH@
+bitboard_test-GoGtpEngine.o: GoGtpEngine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bitboard_test-GoGtpEngine.o -MD -MP -MF $(DEPDIR)/bitboard_test-GoGtpEngine.Tpo -c -o bitboard_test-GoGtpEngine.o `test -f 'GoGtpEngine.cpp' || echo '$(srcdir)/'`GoGtpEngine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/bitboard_test-GoGtpEngine.Tpo $(DEPDIR)/bitboard_test-GoGtpEngine.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoGtpEngine.cpp' object='bitboard_test-GoGtpEngine.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgRandom.o `test -f 'SgRandom.cpp' || echo '$(srcdir)/'`SgRandom.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bitboard_test-GoGtpEngine.o `test -f 'GoGtpEngine.cpp' || echo '$(srcdir)/'`GoGtpEngine.cpp
 
-libomegago_smartgame_a-SgRandom.obj: SgRandom.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgRandom.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgRandom.Tpo -c -o libomegago_smartgame_a-SgRandom.obj `if test -f 'SgRandom.cpp'; then $(CYGPATH_W) 'SgRandom.cpp'; else $(CYGPATH_W) '$(srcdir)/SgRandom.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgRandom.Tpo $(DEPDIR)/libomegago_smartgame_a-SgRandom.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='SgRandom.cpp' object='libomegago_smartgame_a-SgRandom.obj' libtool=no @AMDEPBACKSLASH@
+bitboard_test-GoGtpEngine.obj: GoGtpEngine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bitboard_test-GoGtpEngine.obj -MD -MP -MF $(DEPDIR)/bitboard_test-GoGtpEngine.Tpo -c -o bitboard_test-GoGtpEngine.obj `if test -f 'GoGtpEngine.cpp'; then $(CYGPATH_W) 'GoGtpEngine.cpp'; else $(CYGPATH_W) '$(srcdir)/GoGtpEngine.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/bitboard_test-GoGtpEngine.Tpo $(DEPDIR)/bitboard_test-GoGtpEngine.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='GoGtpEngine.cpp' object='bitboard_test-GoGtpEngine.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgRandom.obj `if test -f 'SgRandom.cpp'; then $(CYGPATH_W) 'SgRandom.cpp'; else $(CYGPATH_W) '$(srcdir)/SgRandom.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(bitboard_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bitboard_test-GoGtpEngine.obj `if test -f 'GoGtpEngine.cpp'; then $(CYGPATH_W) 'GoGtpEngine.cpp'; else $(CYGPATH_W) '$(srcdir)/GoGtpEngine.cpp'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -552,8 +625,11 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(HEADERS)
+all-am: Makefile $(LIBRARIES) $(PROGRAMS) $(HEADERS)
 installdirs:
+	for dir in "$(DESTDIR)$(bindir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -587,7 +663,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-noinstLIBRARIES mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-noinstLIBRARIES \
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -613,7 +690,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am:
+install-exec-am: install-binPROGRAMS
 
 install-html: install-html-am
 
@@ -652,14 +729,15 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-binPROGRAMS
 
 .MAKE: install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
-	clean-noinstLIBRARIES cscopelist-am ctags ctags-am distclean \
-	distclean-compile distclean-generic distclean-tags distdir dvi \
-	dvi-am html html-am info info-am install install-am \
+.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
+	clean-binPROGRAMS clean-generic clean-noinstLIBRARIES \
+	cscopelist-am ctags ctags-am distclean distclean-compile \
+	distclean-generic distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-binPROGRAMS \
 	install-data install-data-am install-dvi install-dvi-am \
 	install-exec install-exec-am install-html install-html-am \
 	install-info install-info-am install-man install-pdf \
@@ -667,7 +745,7 @@ uninstall-am:
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am
+	uninstall-am uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 

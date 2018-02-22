@@ -2,6 +2,8 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = \
 smartgame \
+gtpengine \
+go \
 omegagomain
 
 	

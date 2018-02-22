@@ -12,6 +12,9 @@
 
 #include "SgDebug.h"
 #include "SgException.h"
+#include "GtpInputStream.h"
+#include "GtpOutputStream.h"
+#include "GoGtpEngine.h"
 
 
 using namespace std;
@@ -23,45 +26,52 @@ using std::vector;
 using boost::filesystem::path;
 namespace po = boost::program_options;
 
+namespace{
+    
+    struct CommandLineOptions {
+        bool m_quiet;
+    };
 
-struct CommandLineOptions {
-    bool m_quiet;
-};
-
-void Help(po::options_description& desc, ostream& out)
-{
-    out << "Usage: omegago [options] [input files]\n" << desc << "\n";
-    exit(0);
-}
-
-void ParseOptions(int argc, char** argv, struct CommandLineOptions& options)
-{
-    po::options_description normalOptions("Options");
-    normalOptions.add_options()
-        ("help", "Displays this help and exit")
-        ("quiet", "don't print debug messages");
-
-    po::options_description allOptions;
-    allOptions.add(normalOptions);
-
-    po::variables_map vm;
-    try
+    void Help(po::options_description& desc, ostream& out)
     {
-        po::store(po::command_line_parser(argc, argv).options(allOptions).run(), vm);
-        po::notify(vm);
-    }
-    catch (...)
-    {
-        Help(normalOptions, std::cerr);
-    }
-    if (vm.count("help")){
-        Help(normalOptions, std::cout);
+        out << "Usage: omegago [options] [input files]\n" << desc << "\n";
+        exit(0);
     }
 
-    if (vm.count("quiet")){
-        options.m_quiet = true;
+    void ParseOptions(int argc, char** argv, struct CommandLineOptions& options)
+    {
+        options.m_quiet = false;
+
+        po::options_description normalOptions("Options");
+        normalOptions.add_options()
+            ("help", "Displays this help and exit")
+            ("quiet", "don't print debug messages");
+
+        po::options_description allOptions;
+        allOptions.add(normalOptions);
+
+        po::variables_map vm;
+        try
+        {
+            po::store(po::command_line_parser(argc, argv).options(allOptions).run(), vm);
+            po::notify(vm);
+        }
+        catch (...)
+        {
+            Help(normalOptions, std::cerr);
+        }
+        if (vm.count("help")){
+            Help(normalOptions, std::cout);
+        }
+
+        if (vm.count("quiet")){
+            options.m_quiet = true;
+        }
     }
-}
+
+
+} // namespace
+
 
 
 int main(int argc, char** argv){
@@ -80,8 +90,16 @@ int main(int argc, char** argv){
     }
 
     if (options.m_quiet){
+        // cout << "setting sgdebug to quite." << endl;
         SgDebugToNull();
     }
 
-    SgDebug() << "Starting the main program of OmegaGo. \n";
+    SgDebug() << "# Starting the main program of OmegaGo. \n";
+
+    GoGtpEngine engine;
+
+    GtpInputStream in(std::cin);
+    GtpOutputStream out(std::cout);
+    engine.MainLoop(in, out);
+
 }

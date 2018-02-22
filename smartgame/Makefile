@@ -116,8 +116,13 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libomegago_smartgame_a_AR = $(AR) $(ARFLAGS)
 libomegago_smartgame_a_LIBADD =
-am_libomegago_smartgame_a_OBJECTS = SgDebug.$(OBJEXT) \
-	SgSystem.$(OBJEXT) SgTime.$(OBJEXT) SgException.$(OBJEXT)
+am_libomegago_smartgame_a_OBJECTS =  \
+	libomegago_smartgame_a-SgDebug.$(OBJEXT) \
+	libomegago_smartgame_a-SgSystem.$(OBJEXT) \
+	libomegago_smartgame_a-SgTime.$(OBJEXT) \
+	libomegago_smartgame_a-SgException.$(OBJEXT) \
+	libomegago_smartgame_a-SgGtpCommands.$(OBJEXT) \
+	libomegago_smartgame_a-SgRandom.$(OBJEXT)
 libomegago_smartgame_a_OBJECTS = $(am_libomegago_smartgame_a_OBJECTS)
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
@@ -135,6 +140,10 @@ DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
+AM_V_lt = $(am__v_lt_$(V))
+am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 AM_V_CXX = $(am__v_CXX_$(V))
@@ -287,16 +296,23 @@ libomegago_smartgame_a_SOURCES = \
 SgDebug.cpp \
 SgSystem.cpp \
 SgTime.cpp \
-SgException.cpp
+SgException.cpp \
+SgGtpCommands.cpp \
+SgRandom.cpp
 
 noinst_HEADERS = \
 SgDebug.h \
 SgSystem.h \
 SgTime.h \
-SgException.h
+SgTimer.h \
+SgException.h \
+SgGtpCommands.h \
+SgRandom.h
 
-liboemgago_smartgame_a_CPPFLAGS = \
-$(BOOST_CPPFLAGS) 
+libomegago_smartgame_a_CPPFLAGS = \
+$(BOOST_CPPFLAGS) \
+-I../gtpengine \
+-Itesting
 
 DISTCLEANFILES = *~
 all: all-am
@@ -347,10 +363,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/SgDebug.Po
-include ./$(DEPDIR)/SgException.Po
-include ./$(DEPDIR)/SgSystem.Po
-include ./$(DEPDIR)/SgTime.Po
+include ./$(DEPDIR)/libomegago_smartgame_a-SgDebug.Po
+include ./$(DEPDIR)/libomegago_smartgame_a-SgException.Po
+include ./$(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Po
+include ./$(DEPDIR)/libomegago_smartgame_a-SgRandom.Po
+include ./$(DEPDIR)/libomegago_smartgame_a-SgSystem.Po
+include ./$(DEPDIR)/libomegago_smartgame_a-SgTime.Po
 
 .cpp.o:
 	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -365,6 +383,90 @@ include ./$(DEPDIR)/SgTime.Po
 #	$(AM_V_CXX)source='$<' object='$@' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+libomegago_smartgame_a-SgDebug.o: SgDebug.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgDebug.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgDebug.Tpo -c -o libomegago_smartgame_a-SgDebug.o `test -f 'SgDebug.cpp' || echo '$(srcdir)/'`SgDebug.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgDebug.Tpo $(DEPDIR)/libomegago_smartgame_a-SgDebug.Po
+#	$(AM_V_CXX)source='SgDebug.cpp' object='libomegago_smartgame_a-SgDebug.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgDebug.o `test -f 'SgDebug.cpp' || echo '$(srcdir)/'`SgDebug.cpp
+
+libomegago_smartgame_a-SgDebug.obj: SgDebug.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgDebug.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgDebug.Tpo -c -o libomegago_smartgame_a-SgDebug.obj `if test -f 'SgDebug.cpp'; then $(CYGPATH_W) 'SgDebug.cpp'; else $(CYGPATH_W) '$(srcdir)/SgDebug.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgDebug.Tpo $(DEPDIR)/libomegago_smartgame_a-SgDebug.Po
+#	$(AM_V_CXX)source='SgDebug.cpp' object='libomegago_smartgame_a-SgDebug.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgDebug.obj `if test -f 'SgDebug.cpp'; then $(CYGPATH_W) 'SgDebug.cpp'; else $(CYGPATH_W) '$(srcdir)/SgDebug.cpp'; fi`
+
+libomegago_smartgame_a-SgSystem.o: SgSystem.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgSystem.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgSystem.Tpo -c -o libomegago_smartgame_a-SgSystem.o `test -f 'SgSystem.cpp' || echo '$(srcdir)/'`SgSystem.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgSystem.Tpo $(DEPDIR)/libomegago_smartgame_a-SgSystem.Po
+#	$(AM_V_CXX)source='SgSystem.cpp' object='libomegago_smartgame_a-SgSystem.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgSystem.o `test -f 'SgSystem.cpp' || echo '$(srcdir)/'`SgSystem.cpp
+
+libomegago_smartgame_a-SgSystem.obj: SgSystem.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgSystem.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgSystem.Tpo -c -o libomegago_smartgame_a-SgSystem.obj `if test -f 'SgSystem.cpp'; then $(CYGPATH_W) 'SgSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/SgSystem.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgSystem.Tpo $(DEPDIR)/libomegago_smartgame_a-SgSystem.Po
+#	$(AM_V_CXX)source='SgSystem.cpp' object='libomegago_smartgame_a-SgSystem.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgSystem.obj `if test -f 'SgSystem.cpp'; then $(CYGPATH_W) 'SgSystem.cpp'; else $(CYGPATH_W) '$(srcdir)/SgSystem.cpp'; fi`
+
+libomegago_smartgame_a-SgTime.o: SgTime.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgTime.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgTime.Tpo -c -o libomegago_smartgame_a-SgTime.o `test -f 'SgTime.cpp' || echo '$(srcdir)/'`SgTime.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgTime.Tpo $(DEPDIR)/libomegago_smartgame_a-SgTime.Po
+#	$(AM_V_CXX)source='SgTime.cpp' object='libomegago_smartgame_a-SgTime.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgTime.o `test -f 'SgTime.cpp' || echo '$(srcdir)/'`SgTime.cpp
+
+libomegago_smartgame_a-SgTime.obj: SgTime.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgTime.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgTime.Tpo -c -o libomegago_smartgame_a-SgTime.obj `if test -f 'SgTime.cpp'; then $(CYGPATH_W) 'SgTime.cpp'; else $(CYGPATH_W) '$(srcdir)/SgTime.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgTime.Tpo $(DEPDIR)/libomegago_smartgame_a-SgTime.Po
+#	$(AM_V_CXX)source='SgTime.cpp' object='libomegago_smartgame_a-SgTime.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgTime.obj `if test -f 'SgTime.cpp'; then $(CYGPATH_W) 'SgTime.cpp'; else $(CYGPATH_W) '$(srcdir)/SgTime.cpp'; fi`
+
+libomegago_smartgame_a-SgException.o: SgException.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgException.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgException.Tpo -c -o libomegago_smartgame_a-SgException.o `test -f 'SgException.cpp' || echo '$(srcdir)/'`SgException.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgException.Tpo $(DEPDIR)/libomegago_smartgame_a-SgException.Po
+#	$(AM_V_CXX)source='SgException.cpp' object='libomegago_smartgame_a-SgException.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgException.o `test -f 'SgException.cpp' || echo '$(srcdir)/'`SgException.cpp
+
+libomegago_smartgame_a-SgException.obj: SgException.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgException.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgException.Tpo -c -o libomegago_smartgame_a-SgException.obj `if test -f 'SgException.cpp'; then $(CYGPATH_W) 'SgException.cpp'; else $(CYGPATH_W) '$(srcdir)/SgException.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgException.Tpo $(DEPDIR)/libomegago_smartgame_a-SgException.Po
+#	$(AM_V_CXX)source='SgException.cpp' object='libomegago_smartgame_a-SgException.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgException.obj `if test -f 'SgException.cpp'; then $(CYGPATH_W) 'SgException.cpp'; else $(CYGPATH_W) '$(srcdir)/SgException.cpp'; fi`
+
+libomegago_smartgame_a-SgGtpCommands.o: SgGtpCommands.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgGtpCommands.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Tpo -c -o libomegago_smartgame_a-SgGtpCommands.o `test -f 'SgGtpCommands.cpp' || echo '$(srcdir)/'`SgGtpCommands.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Tpo $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Po
+#	$(AM_V_CXX)source='SgGtpCommands.cpp' object='libomegago_smartgame_a-SgGtpCommands.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgGtpCommands.o `test -f 'SgGtpCommands.cpp' || echo '$(srcdir)/'`SgGtpCommands.cpp
+
+libomegago_smartgame_a-SgGtpCommands.obj: SgGtpCommands.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgGtpCommands.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Tpo -c -o libomegago_smartgame_a-SgGtpCommands.obj `if test -f 'SgGtpCommands.cpp'; then $(CYGPATH_W) 'SgGtpCommands.cpp'; else $(CYGPATH_W) '$(srcdir)/SgGtpCommands.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Tpo $(DEPDIR)/libomegago_smartgame_a-SgGtpCommands.Po
+#	$(AM_V_CXX)source='SgGtpCommands.cpp' object='libomegago_smartgame_a-SgGtpCommands.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgGtpCommands.obj `if test -f 'SgGtpCommands.cpp'; then $(CYGPATH_W) 'SgGtpCommands.cpp'; else $(CYGPATH_W) '$(srcdir)/SgGtpCommands.cpp'; fi`
+
+libomegago_smartgame_a-SgRandom.o: SgRandom.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgRandom.o -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgRandom.Tpo -c -o libomegago_smartgame_a-SgRandom.o `test -f 'SgRandom.cpp' || echo '$(srcdir)/'`SgRandom.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgRandom.Tpo $(DEPDIR)/libomegago_smartgame_a-SgRandom.Po
+#	$(AM_V_CXX)source='SgRandom.cpp' object='libomegago_smartgame_a-SgRandom.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgRandom.o `test -f 'SgRandom.cpp' || echo '$(srcdir)/'`SgRandom.cpp
+
+libomegago_smartgame_a-SgRandom.obj: SgRandom.cpp
+	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libomegago_smartgame_a-SgRandom.obj -MD -MP -MF $(DEPDIR)/libomegago_smartgame_a-SgRandom.Tpo -c -o libomegago_smartgame_a-SgRandom.obj `if test -f 'SgRandom.cpp'; then $(CYGPATH_W) 'SgRandom.cpp'; else $(CYGPATH_W) '$(srcdir)/SgRandom.cpp'; fi`
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libomegago_smartgame_a-SgRandom.Tpo $(DEPDIR)/libomegago_smartgame_a-SgRandom.Po
+#	$(AM_V_CXX)source='SgRandom.cpp' object='libomegago_smartgame_a-SgRandom.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libomegago_smartgame_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libomegago_smartgame_a-SgRandom.obj `if test -f 'SgRandom.cpp'; then $(CYGPATH_W) 'SgRandom.cpp'; else $(CYGPATH_W) '$(srcdir)/SgRandom.cpp'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

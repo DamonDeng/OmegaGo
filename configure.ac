@@ -30,5 +30,7 @@ AX_BOOST_UNIT_TEST_FRAMEWORK
 
 AC_CONFIG_FILES([Makefile
                  omegagomain/Makefile
-                 smartgame/Makefile])
+                 smartgame/Makefile
+                 gtpengine/Makefile
+                 go/Makefile])
 AC_OUTPUT
